@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    image: agriculture:latest
+    ports:
+      - "3000:80"
+    environment:
+      - RAILS_ENV=production
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=agriculture
+      - POSTGRES_HOST=postgres
+      # Adicione outras variáveis de ambiente necessárias aqui
+    volumes:
+      - .:/rails
+    # Descomente se precisar passar o master key
+    # environment:
+    #   RAILS_MASTER_KEY: "sua_master_key_aqui"
+    command: ["/bin/bash", "-c", "bash ./wait-for-it.sh postgres 5432 -- ./bin/thrust ./bin/rails server"]
+    networks:
+      - minha-rede
+
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=agriculture
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - minha-rede
+
+networks:
+  minha-rede:
+    external: true 
