@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  # before_action :authenticate_request!, only: [:index]
+
   # POST /users
   def create
     user = User.new(user_params)
@@ -12,7 +14,22 @@ class UsersController < ApplicationController
   # GET /users
   def index
     users = User.all
-    render json: users
+  
+    render json: users.map { |user| user.as_json(only: [:id, :name, :email, :birthdate]) }
+  end
+
+  def show
+    user = User.find(params[:id])
+    if user
+      render json: user.as_json(only: [:id, :name, :email, :birthdate])
+    else
+      render json: { error: "User not found" }, status: :not_found
+    end
+  end
+
+  def create_farm
+    raw_body = request.raw_post
+    render json: raw_body, status: :ok
   end
 
   private
