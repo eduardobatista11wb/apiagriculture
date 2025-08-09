@@ -1,10 +1,16 @@
 class FarmsController < ApplicationController
 
+    def index
+        farms = Farm.all
+
+        render json: farms
+    end
+
     def create_farm
         farm = Farms::Create.new(params).execute
         # raw_body = request.raw_post
         # render json: raw_body, status: :ok
-        farm
+        render json: farm
     end
 
 
