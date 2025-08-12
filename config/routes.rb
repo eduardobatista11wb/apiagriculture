@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   get 'user/:id', to: 'users#show'
   post 'users/test', to: 'users#create_farm'
 
+  get 'farms/:id', to: 'farms#show'
+  get 'user/:id/farms', to: 'farms#index_by_user'
   post 'user/:id/farm', to: 'farms#create_farm'
 
   # Defines the root path route ("/")

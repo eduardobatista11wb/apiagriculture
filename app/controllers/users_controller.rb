@@ -1,11 +1,12 @@
 class UsersController < ApplicationController
-  # before_action :authenticate_request!, only: [:index]
+  before_action :authenticate_request!, only: [:index]
 
   # POST /users
   def create
     user = User.new(user_params)
     if user.save
-      render json: { user: user }, status: :created
+      render json: { user: user }, serializer: UserSerializer, status: :created
+
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -14,14 +15,14 @@ class UsersController < ApplicationController
   # GET /users
   def index
     users = User.all
-  
-    render json: users.map { |user| user.as_json(only: [:id, :name, :email, :birthdate]) }
+    render json: users, each_serializer: UserSerializer
+    # render json: users.map { |user| user.as_json(only: [:id, :name, :email, :birthdate]) }
   end
 
   def show
     user = User.find(params[:id])
     if user
-      render json: user.as_json(only: [:id, :name, :email, :birthdate])
+      render json: user, each_serializer: UserSerializer
     else
       render json: { error: "User not found" }, status: :not_found
     end

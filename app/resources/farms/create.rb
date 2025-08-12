@@ -6,10 +6,11 @@ class Farms::Create
     end
   
     def execute
-      farm = Farm.new(mount_params.merge(user_id: params[:id]))
+      farm = Farm.new(mount_params.merge(user_id: params[:id])) # Ajuste se `user_id` vier de outro lugar
       if farm.save
-        farm
+        farm # retorna o objeto para o serializer
       else
+        # pode retornar erros, mas nesse caso não dá para usar o serializer normal
         { errors: farm.errors.full_messages }
       end
       # user = User.new(params)
@@ -27,6 +28,12 @@ class Farms::Create
           address: params[:address],
           zip_code: params[:zipcode]
         }
+    end
+
+    private
+
+    def farm_params
+      @params.require(:farm).permit(:name, :country, :state, :city, :address, :zipcode)
     end
 
   end
